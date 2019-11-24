@@ -6,10 +6,13 @@ import static com.rdp.hosptialfrontdesk.constants.ApplicationConstants.NO_SPECIA
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rdp.hosptialfrontdesk.model.Appointment;
@@ -25,20 +28,22 @@ public class HospitalFrontDeskController {
 	@Autowired
 	HospitalFrontDeskService hospitalService;
 
-	@GetMapping(value = "${hms.retrievespecialist}")
-	public Specialist specialistList(@PathVariable("id") String hospitalId, @PathVariable("type") String specialistType,
-			Specialist specialist) throws InvalidHospitalNameException {
-		System.out.println("retrieve specialist " + hospitalId + specialistType);
+	@GetMapping(value = "${hms.retrievespecialist}", 
+			produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE }, 
+		    consumes = MediaType.ALL_VALUE)
+	public ResponseEntity<Specialist> specialistList(@PathVariable("id") String hospitalId,
+			@PathVariable("type") String specialistType, Specialist specialist) throws InvalidHospitalNameException {
+		// System.out.println("retrieve specialist " + hospitalId + specialistType);
 		if (hospitalId != null && specialistType != null) {
 			specialist = hospitalService.getSpecialistDetails(hospitalId, specialistType);
+			return new ResponseEntity<Specialist>(specialist, HttpStatus.OK);
 		} else {
 			System.out.println("Hospital name and specialist name should not be empty !!!");
 			throw new InvalidHospitalNameException(INVALID_HOSPITAL_NAME);
 		}
-		return specialist;
 	}
 
-	@GetMapping(value = "${hms.specialistappointment}" , produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${hms.specialistappointment}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Appointment createAppointment(@PathVariable("id") String hospitalId,
 			@PathVariable("name") String specialistName, @PathVariable("patientname") String patientName,
 			@PathVariable("appointmentday") String appointmentDay)
@@ -58,16 +63,16 @@ public class HospitalFrontDeskController {
 		}
 		return appointmentDetails;
 	}
-	
-	@GetMapping(value="${hms.availablebeds}")
+
+	@GetMapping(value = "${hms.availablebeds}")
 	public String availableBeds(@PathVariable("id") String hospitalId) throws InvalidHospitalNameException {
 		int beds = 0;
-		if(hospitalId != null) {
+		if (hospitalId != null) {
 			beds = hospitalService.getAvailableBeds(hospitalId);
 		} else {
 			throw new InvalidHospitalNameException(INVALID_HOSPITAL_NAME);
 		}
-		
-		return "Number of Beds Available is = " + beds;		
+
+		return "Number of Beds Available is = " + beds;
 	}
 }

@@ -5,67 +5,92 @@ import java.util.Arrays;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rdp.hosptialfrontdesk.constants.ApplicationProperties;
+import com.rdp.hosptialfrontdesk.model.Specialist;
+
 import static com.rdp.hosptialfrontdesk.constants.ApplicationConstants.URI_GET_ALL_SPECIALIST;
 
+@Service
 public class SpecialistClient {
+
+	private static MediaType MEDIATYPE_JSON = MediaType.APPLICATION_JSON;
+	private static MediaType MEDIATYPE_XML = MediaType.APPLICATION_XML;
+	private static String APPLICATION_PORT = "8080";
+	private static String APPLICATION_ENVIRONMENT = "http://localhost";
 
 	/**
 	 * Requests the response in XML format and prints the objects in console
 	 */
-	private static void getSpecialistDetailsAsXML() {
-
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setAccept(Arrays.asList(new MediaType[] { MediaType.APPLICATION_XML }));
-		RestTemplate restTemplate = new RestTemplate();
-
-		HttpEntity<SpecialistResponse[]> entity = new HttpEntity<SpecialistResponse[]>(httpHeaders);
-
-		// send request with GET method, and headers
-		ResponseEntity<SpecialistResponse[]> response = restTemplate.exchange(URI_GET_ALL_SPECIALIST, HttpMethod.GET, entity,
-				SpecialistResponse[].class,"946","Dentist");
-
-		SpecialistResponse[] list = response.getBody();
-		if (list != null) {
-			System.out.println(" ----------- Get Specialist details as XML ------------ ");
-			for (SpecialistResponse doctors : list) {
-				System.out.println(" Doctors details " + doctors.getHospitalId() + " - " + doctors.getName());
-
-			}
-		}
-
-	}
-
-	/**
-	 * Requests the response in JSON format and prints the objects in console
-	 */
-	private static void getSpecialistDetailsAsJSON() {
-
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setAccept(Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON }));
-		RestTemplate restTemplate = new RestTemplate();
-
-		HttpEntity<SpecialistResponse[]> entity = new HttpEntity<SpecialistResponse[]>(httpHeaders);
-
-		// send request with GET method, and headers
-		ResponseEntity<SpecialistResponse[]> response = restTemplate.exchange(URI_GET_ALL_SPECIALIST, HttpMethod.GET, entity,
-				SpecialistResponse[].class);
-
-		SpecialistResponse[] list = response.getBody();
-		if (list != null) {
-			System.out.println(" ----------- Get Specialist details as JSON ------------ ");
-			for (SpecialistResponse doctors : list) {
-				System.out.println(" Doctors details " + doctors.getHospitalId() + " - " + doctors.getName());
-
-			}
-		}
-	}
 
 	public static void main(String[] args) {
-		getSpecialistDetailsAsXML();
-		getSpecialistDetailsAsJSON();
+
+		/*
+		 * ApplicationProperties properties = new ApplicationProperties(); String URL =
+		 * properties.generateUrl();
+		 */
+
+		getSpecialistByType(APPLICATION_PORT, APPLICATION_ENVIRONMENT, MEDIATYPE_JSON, URI_GET_ALL_SPECIALIST, "946",
+				"Dentist");
+		getSpecialistByType(APPLICATION_PORT, APPLICATION_ENVIRONMENT, MEDIATYPE_XML, URI_GET_ALL_SPECIALIST, "946",
+				"Dentist");
+
+		// getSpecialistDetailsAsXML();
+		// getSpecialistDetailsAsJSON();
+
+		/*
+		 * ObjectMapper mapper = new ObjectMapper(); RestTemplate restTemplate = new
+		 * RestTemplate(); Specialist bhutan = restTemplate.getForObject(
+		 * "http://localhost:8080/hospitalfrontdesk/retrievespecialist/{id}/{type}",
+		 * Specialist.class,946,"Dentist"); try {
+		 * System.out.println("Country Name:"+mapper.writeValueAsString(bhutan)); }
+		 * catch (JsonProcessingException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
+
+	}
+
+	private static void getSpecialistByType(String applicationPort, String applicationType, MediaType mediaType,
+			String url, String hospitalId, String specialistType) {
+		// String url1 = "http://localhost:" + applicationPort + "/" + url;
+		System.out.print(url);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setAccept(Arrays.asList(new MediaType[] { mediaType }));
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpEntity<SpecialistResponse[]> entity = new HttpEntity<SpecialistResponse[]>(httpHeaders);
+
+		// send request with GET method, and headers
+
+		ResponseEntity<Specialist> response = restTemplate.exchange(url, HttpMethod.GET, entity, Specialist.class, 946,
+				"Dentist");
+
+		HttpStatus status = response.getStatusCode();
+
+		if (status == HttpStatus.OK) {
+			ObjectMapper mapper = new ObjectMapper();
+			Specialist result = response.getBody();
+			try {
+				System.out.println(mapper.writeValueAsString(result));
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+		}
+
+		/*
+		 * ObjectMapper mapper = new ObjectMapper(); Specialist specialistDetails =
+		 * restTemplate.getForObject(url, Specialist.class, hospitalId, specialistType);
+		 * try { System.out.println(mapper.writeValueAsString(specialistDetails)); }
+		 * catch (JsonProcessingException e) { e.printStackTrace(); }
+		 */
+
 	}
 
 }

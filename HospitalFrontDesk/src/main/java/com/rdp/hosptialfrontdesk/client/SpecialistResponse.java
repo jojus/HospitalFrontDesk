@@ -11,7 +11,7 @@ public class SpecialistResponse {
 	
 	
 	public SpecialistResponse() {
-		
+		super();
 	}
 
 	public SpecialistResponse(String name, String type, String availableDay, String availableTime, String isAvailable,

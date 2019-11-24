@@ -10,8 +10,11 @@ public class Specialist {
 	private String availableTime;
 	private String isAvailable;
 	private String hospitalId;
-	
-	
+
+	public Specialist() {
+		super();
+	}
+
 	public Specialist(String name, String type, String availableDay, String availableTime, String isAvailable,
 			String hospitalId) {
 		super();
@@ -34,33 +37,41 @@ public class Specialist {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
+
 	public String getAvailableTime() {
 		return availableTime;
 	}
+
 	public void setAvailableTime(String availableTime) {
 		this.availableTime = availableTime;
 	}
+
 	public String getIsAvailable() {
 		return isAvailable;
 	}
+
 	public void setIsAvailable(String isAvailable) {
 		this.isAvailable = isAvailable;
 	}
+
 	public String getHospitalId() {
 		return hospitalId;
 	}
+
 	public void setHospitalId(String hospitalId) {
 		this.hospitalId = hospitalId;
 	}
 
-	
 }
