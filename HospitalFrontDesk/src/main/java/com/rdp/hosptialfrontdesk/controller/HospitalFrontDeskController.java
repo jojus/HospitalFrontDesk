@@ -28,7 +28,7 @@ public class HospitalFrontDeskController {
 	@Autowired
 	HospitalFrontDeskService hospitalService;
 
-	@GetMapping(value = "${hms.retrievespecialist}", 
+	@GetMapping(value = "${hms.retrievespecialist}",
 			produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE }, 
 		    consumes = MediaType.ALL_VALUE)
 	public ResponseEntity<Specialist> specialistList(@PathVariable("id") String hospitalId,
@@ -49,7 +49,6 @@ public class HospitalFrontDeskController {
 			@PathVariable("appointmentday") String appointmentDay)
 			throws InvalidHospitalNameException, NoSpecialistFoundException {
 		Appointment appointmentDetails;
-		System.out.println("appointment " + hospitalId + specialistName);
 		if (hospitalId != null) {
 			boolean isSpecialistAvailable = hospitalService.checkSpecialistName(specialistName);
 			if (isSpecialistAvailable) {

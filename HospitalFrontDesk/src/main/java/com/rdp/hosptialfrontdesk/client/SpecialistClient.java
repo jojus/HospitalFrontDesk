@@ -1,6 +1,7 @@
 package com.rdp.hosptialfrontdesk.client;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -39,33 +40,23 @@ public class SpecialistClient {
 
 		getSpecialistByType(APPLICATION_PORT, APPLICATION_ENVIRONMENT, MEDIATYPE_JSON, URI_GET_ALL_SPECIALIST, "946",
 				"Dentist");
+		
+		System.out.println("-------------------- -----------------------");
+		
 		getSpecialistByType(APPLICATION_PORT, APPLICATION_ENVIRONMENT, MEDIATYPE_XML, URI_GET_ALL_SPECIALIST, "946",
 				"Dentist");
-
-		// getSpecialistDetailsAsXML();
-		// getSpecialistDetailsAsJSON();
-
-		/*
-		 * ObjectMapper mapper = new ObjectMapper(); RestTemplate restTemplate = new
-		 * RestTemplate(); Specialist bhutan = restTemplate.getForObject(
-		 * "http://localhost:8080/hospitalfrontdesk/retrievespecialist/{id}/{type}",
-		 * Specialist.class,946,"Dentist"); try {
-		 * System.out.println("Country Name:"+mapper.writeValueAsString(bhutan)); }
-		 * catch (JsonProcessingException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
 
 	}
 
 	private static void getSpecialistByType(String applicationPort, String applicationType, MediaType mediaType,
 			String url, String hospitalId, String specialistType) {
 		// String url1 = "http://localhost:" + applicationPort + "/" + url;
-		System.out.print(url);
 		HttpHeaders httpHeaders = new HttpHeaders();
+		//httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		httpHeaders.setAccept(Arrays.asList(new MediaType[] { mediaType }));
 		RestTemplate restTemplate = new RestTemplate();
 
-		HttpEntity<SpecialistResponse[]> entity = new HttpEntity<SpecialistResponse[]>(httpHeaders);
+		HttpEntity<Specialist> entity = new HttpEntity<> (httpHeaders);
 
 		// send request with GET method, and headers
 
@@ -78,6 +69,9 @@ public class SpecialistClient {
 			ObjectMapper mapper = new ObjectMapper();
 			Specialist result = response.getBody();
 			try {
+				System.out.println("===================================== \n"
+						+ "====== " + mediaType + " ======= \n"
+						+ " ===================================== ");
 				System.out.println(mapper.writeValueAsString(result));
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
