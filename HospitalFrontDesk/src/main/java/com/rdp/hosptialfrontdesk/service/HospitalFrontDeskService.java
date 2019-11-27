@@ -138,4 +138,8 @@ public class HospitalFrontDeskService {
 		}
 		return flag;
 	}
+	
+	public List<Specialist> listOfSpecialist() {		
+		return doctorsAndDetails;
+	}
 }

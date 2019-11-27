@@ -9,4 +9,6 @@ public class ApplicationConstants {
 	
 	// URI 
 	public static final String URI_GET_ALL_SPECIALIST = "http://localhost:8080/hospitalfrontdesk/retrievespecialist/{id}/{type}";
+	
+	public static final String LIST_OF_SPECIALIST = "http://localhost:8080/hospitalfrontdesk/listOfSpecialists";
 }

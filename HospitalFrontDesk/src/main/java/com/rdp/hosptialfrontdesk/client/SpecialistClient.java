@@ -2,7 +2,9 @@ package com.rdp.hosptialfrontdesk.client;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rdp.hosptialfrontdesk.constants.ApplicationProperties;
 import com.rdp.hosptialfrontdesk.model.Specialist;
 
-import static com.rdp.hosptialfrontdesk.constants.ApplicationConstants.URI_GET_ALL_SPECIALIST;
+import static com.rdp.hosptialfrontdesk.constants.ApplicationConstants.LIST_OF_SPECIALIST;
 
 @Service
 public class SpecialistClient {
@@ -38,18 +40,18 @@ public class SpecialistClient {
 		 * properties.generateUrl();
 		 */
 
-		getSpecialistByType(APPLICATION_PORT, APPLICATION_ENVIRONMENT, MEDIATYPE_JSON, URI_GET_ALL_SPECIALIST, "946",
-				"Dentist");
+		getSpecialistByType(APPLICATION_PORT, APPLICATION_ENVIRONMENT, MEDIATYPE_JSON, LIST_OF_SPECIALIST);
 		
 		System.out.println("-------------------- -----------------------");
 		
-		getSpecialistByType(APPLICATION_PORT, APPLICATION_ENVIRONMENT, MEDIATYPE_XML, URI_GET_ALL_SPECIALIST, "946",
-				"Dentist");
+		getSpecialistByType(APPLICATION_PORT, APPLICATION_ENVIRONMENT, MEDIATYPE_XML,LIST_OF_SPECIALIST);
 
 	}
 
 	private static void getSpecialistByType(String applicationPort, String applicationType, MediaType mediaType,
-			String url, String hospitalId, String specialistType) {
+			String url) {
+		
+		System.out.println("URL "+ url);
 		// String url1 = "http://localhost:" + applicationPort + "/" + url;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		//httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -60,22 +62,31 @@ public class SpecialistClient {
 
 		// send request with GET method, and headers
 
-		ResponseEntity<Specialist> response = restTemplate.exchange(url, HttpMethod.GET, entity, Specialist.class, 946,
-				"Dentist");
+		ResponseEntity<List<Specialist>> response = restTemplate.exchange(url, HttpMethod.GET, entity, 
+				new ParameterizedTypeReference<List<Specialist>>() {});
 
 		HttpStatus status = response.getStatusCode();
 
 		if (status == HttpStatus.OK) {
 			ObjectMapper mapper = new ObjectMapper();
-			Specialist result = response.getBody();
+			List<Specialist> result = response.getBody();
+			System.out.println("===================================== \n"
+					+ "====== " + mediaType + " ======= \n"
+					+ " ===================================== ");
 			try {
-				System.out.println("===================================== \n"
-						+ "====== " + mediaType + " ======= \n"
-						+ " ===================================== ");
+				
 				System.out.println(mapper.writeValueAsString(result));
 			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			/*
+			 * System.out.println("Name " + result.getName()); System.out.println("Type " +
+			 * result.getType()); System.out.println("Available Day " +
+			 * result.getAvailableDay()); System.out.println("Available Time " +
+			 * result.getAvailableTime()); System.out.println("Hospital Id" +
+			 * result.getHospitalId());
+			 */
 		}
 
 		/*

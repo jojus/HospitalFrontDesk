@@ -74,4 +74,12 @@ public class HospitalFrontDeskController {
 
 		return "Number of Beds Available is = " + beds;
 	}
+	
+	@GetMapping(value = "${hms.specialistdetails}",
+			produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE }, 
+		    consumes = MediaType.ALL_VALUE)
+	public List<Specialist> retrieveSpecialistDetails() {		
+		return hospitalService.listOfSpecialist();
+		
+	}
 }
